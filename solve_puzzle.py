@@ -1,11 +1,14 @@
 import numpy as np
 import sys
+import argparse
 from random import *
+
+# My library
 from algorithm import *
 from utils import *
 
 class Puzzle:
-    def __init__(self, init_state):
+    def __init__(self, init_state=None):
         self.init = init_state
         self.goal = np.array([[1,2,3],
                               [4,5,6],
@@ -13,7 +16,8 @@ class Puzzle:
 
         print("Create puzzle")
 
-        # self.create_random_puzzle()
+        if(self.init==None): 
+            self.create_random_puzzle()
         self.print_init_goal()
 
     def print_init_goal(self):
@@ -23,6 +27,7 @@ class Puzzle:
         print(self.goal)
 
     def create_random_puzzle(self):
+        self.init = self.goal.copy()
         i, j = np.where(self.init==0)
 
         # [up, down, left, right]
@@ -40,6 +45,7 @@ class Puzzle:
                new_j<=2 and new_j>=0):
                 self.init[(i,j)], self.init[(new_i,new_j)] = \
                     self.init[(new_i,new_j)], self.init[(i,j)]
+                i, j = new_i, new_j
         
     def solve(self, algo):
         print("Start puzzle")
@@ -60,17 +66,33 @@ def parse_input(input_str):
     return init_state
 
 if __name__ == "__main__":
-    if (len(sys.argv) != 3):
-        print("Please enter an argument (column wise)!!")
-        print("Example: python3 solve_puzzle.py 147028356 BFS")
-        sys.exit(1)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-a", "--algorithm", help="Choose a search algorithm from [BFS, DFS, A*]", \
+                           choices=["BFS", "DFS", "A*"], default="BFS")
+    parser.add_argument("-i", "--initial", help="Choose a initial puzzle state, \
+                                                 default is random initial puzzle")
+    parser.add_argument("-p", "--print", help="Print out the solution", action="store_true")
+    args = parser.parse_args()
 
+    # if (len(sys.argv) != 3):
+    #     print("Please enter an argument (column wise)!!")
+    #     print("Example: python3 solve_puzzle.py 147028356 BFS")
+    #     sys.exit(1)
+    #
     # algos = ["BFS", "DFS", "A*"]
 
-    init_state = parse_input(sys.argv[1])
-    algo = sys.argv[2]
+    init_state = None
+    if args.initial != None:
+        init_state = parse_input(args.initial)
+    
+    algo = args.algorithm
 
     my_puzzle = Puzzle(init_state)
     sol = my_puzzle.solve(algo)
+
+    if args.print: 
+        for state in sol:
+            print(state)
+        
 
 
