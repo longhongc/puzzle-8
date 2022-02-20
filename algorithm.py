@@ -10,7 +10,7 @@ class Node:
     def __str__(self):
         return str(self.state)
 
-class GraphBFS:
+class Graph: 
     def __init__(self, init_state, goal_state):
         self.queue = []
         # use set for faster checking visited 
@@ -47,6 +47,26 @@ class GraphBFS:
 
         return childs
 
+    # after finding the goal, backtrack to find the path
+    def generate_path(self, node):
+        path = []
+        # backtrack
+        while(node.parent != None):
+            path.append(node.state)
+            node = node.parent
+        path.append(self.init_state)
+        path.reverse()
+
+        for state in path:
+            print(state)
+
+        return path
+
+
+class GraphBFS(Graph):
+    def __init__(self, init_state, goal_state):
+        Graph.__init__(self, init_state, goal_state)
+
     def search(self):
         while(len(self.queue) != 0):
             current = self.queue.pop(0)
@@ -63,20 +83,5 @@ class GraphBFS:
         else:
             print("Search fails")
             sys.exit(1)
-
-    # after finding the goal, backtrack to find the path
-    def generate_path(self, node):
-        path = []
-        # backtrack
-        while(node.parent != None):
-            path.append(node.state)
-            node = node.parent
-        path.append(self.init_state)
-        path.reverse()
-
-        for state in path:
-            print(state)
-
-        return path
 
 
