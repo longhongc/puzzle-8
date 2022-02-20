@@ -10,7 +10,8 @@ class Puzzle:
                               [7,8,0]])
         
     def solve(self):
-        graph = GraphBFS(self.init, self.goal)
+        #graph = GraphBFS(self.init, self.goal)
+        graph = GraphDFS(self.init, self.goal)
         solution = graph.search()
 
         return solution

@@ -1,5 +1,6 @@
 import numpy as np
 import sys
+from utils import *
 
 class Node:
     def __init__(self, state=None, parent=None, cost=0):
@@ -57,11 +58,12 @@ class Graph:
         path.append(self.init_state)
         path.reverse()
 
+        print("Solution steps: ", len(path))
+
         for state in path:
             print(state)
 
         return path
-
 
 class GraphBFS(Graph):
     def __init__(self, init_state, goal_state):
@@ -69,10 +71,37 @@ class GraphBFS(Graph):
 
     def search(self):
         while(len(self.queue) != 0):
+            run_spinning_cursor()
+            # BFS use queue
             current = self.queue.pop(0)
             # check if arrive goal
             if(current.state == self.goal_state).all():
                 print("Success")
+                print("Search nodes: ", len(self.visited))
+                return self.generate_path(current)
+
+            childs = self.find_child_nodes(current)
+            for child in childs:
+                # eliminate visited state
+                if(str(child) not in self.visited):
+                    self.add_node(child)
+        else:
+            print("Search fails")
+            sys.exit(1)
+
+class GraphDFS(Graph):
+    def __init__(self, init_state, goal_state):
+        Graph.__init__(self, init_state, goal_state)
+
+    def search(self):
+        while(len(self.queue) != 0):
+            run_spinning_cursor()
+            # DFS use stack
+            current = self.queue.pop()
+            # check if arrive goal
+            if(current.state == self.goal_state).all():
+                print("\nSuccess")
+                print("Search nodes: ", len(self.visited))
                 return self.generate_path(current)
 
             childs = self.find_child_nodes(current)
