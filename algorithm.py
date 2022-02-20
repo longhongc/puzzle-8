@@ -60,8 +60,9 @@ class Graph:
 
         print("Solution steps: ", len(path))
 
-        for state in path:
-            print(state)
+        # for state in path:
+        #     print(state)
+        #
 
         return path
 
