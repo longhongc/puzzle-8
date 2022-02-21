@@ -6,10 +6,16 @@ class Node:
     def __init__(self, state=None, parent=None, cost=0):
         self.state = state
         self.parent = parent
-        self.cost = 0
+        self.cost = cost
 
     def __str__(self):
         return str(self.state)
+
+    def __lt__(self, other): 
+        return self.cost < other.cost
+
+    def __gt__(self, other): 
+        return self.cost > other.cost
 
 class Graph: 
     def __init__(self, init_state, goal_state):
@@ -110,6 +116,48 @@ class GraphDFS(Graph):
                 # eliminate visited state
                 if(str(child) not in self.visited):
                     self.add_node(child)
+        else:
+            print("Search fails")
+            sys.exit(1)
+
+class GraphAStar(Graph):
+    def __init__(self, init_state, goal_state):
+        Graph.__init__(self, init_state, goal_state)
+
+    def add_node(self, node, h_cost=0):
+        self.queue.append((h_cost, node))
+        self.visited.add(str(node))
+
+    def heuristic(self, node): 
+        C = node.cost
+        G = 0
+        for num in range(1, 5):  
+            i, j = np.where(node.state==num)
+            gi, gj = np.where(self.goal_state==num)
+            G += abs(gi-i) + abs(gj-j)
+
+        return C + G
+
+    def search(self):
+        while(len(self.queue) != 0):
+            run_spinning_cursor()
+
+            # AStar pick the loweset C+G cost 
+            self.queue = sorted(self.queue)
+            current = self.queue.pop(0)[1]
+
+            # check if arrive goal
+            if(current.state == self.goal_state).all():
+                print("\nSuccess")
+                print("Search nodes: ", len(self.visited))
+                return self.generate_path(current)
+
+            childs = self.find_child_nodes(current)
+            for child in childs:
+                # eliminate visited state
+                if(str(child) not in self.visited):
+                    h_cost = self.heuristic(child)
+                    self.add_node(child, h_cost)
         else:
             print("Search fails")
             sys.exit(1)

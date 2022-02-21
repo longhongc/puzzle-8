@@ -16,7 +16,7 @@ class Puzzle:
 
         print("Create puzzle")
 
-        if(self.init==None): 
+        if(type(self.init)==type(None)): 
             self.create_random_puzzle()
         self.print_init_goal()
 
@@ -54,6 +54,8 @@ class Puzzle:
             graph = GraphBFS(self.init, self.goal)
         if algo == "DFS": 
             graph = GraphDFS(self.init, self.goal)
+        if algo == "AStar": 
+            graph = GraphAStar(self.init, self.goal)
 
         solution = graph.search()
 
@@ -67,8 +69,8 @@ def parse_input(input_str):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-a", "--algorithm", help="Choose a search algorithm from [BFS, DFS, A*]", \
-                           choices=["BFS", "DFS", "A*"], default="BFS")
+    parser.add_argument("-a", "--algorithm", help="Choose a search algorithm from [BFS, DFS, AStar]", \
+                           choices=["BFS", "DFS", "AStar"], default="BFS")
     parser.add_argument("-i", "--initial", help="Choose a initial puzzle state, \
                                                  default is random initial puzzle")
     parser.add_argument("-p", "--print", help="Print out the solution", action="store_true")
