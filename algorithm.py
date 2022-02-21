@@ -131,7 +131,7 @@ class GraphAStar(Graph):
     def heuristic(self, node): 
         C = node.cost
         G = 0
-        for num in range(1, 6):  
+        for num in range(1, 9):  
             i, j = np.where(node.state==num)
             gi, gj = np.where(self.goal_state==num)
             G += abs(gi-i) + abs(gj-j)
